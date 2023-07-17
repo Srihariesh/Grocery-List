@@ -30,6 +30,7 @@ import { useState ,useEffect} from 'react'
 import AddItem from './AddItem'
 import SearchItem from './SearchItem'
 import apiRequest from './apiRequest'
+import axios from 'axios'
 
 
 
@@ -39,7 +40,7 @@ const App = () => {
   const [newItems,setNewItems]=useState('');
   const [search,setSearch]=useState('');
   const[fetchError,setFetchError]=useState(null);
-  const[isLosding,setIsLoading]=useState(true);
+  const[isLoading,setIsLoading]=useState(true);
   
 
   useEffect(()=>
@@ -88,10 +89,12 @@ const handleCheck= async(id)=>{
     setItems(listItems);
     const myItem=listItems.filter((item)=>item.id===id);
     const updateOptions={
-      method: 'PATCH',
+      method: 'PUT',
       headers: {
         'Content-Type' :'application/json'
       },
+    //   const response = await axios.get('https://mockapi.com/api/endpoint'); // Replace with your mock API endpoint
+    // setData(response.data);
       body:JSON.stringify({checked:myItem[0].checked })
     };
     const reqUrl =`${API_URL}/${id}`;
@@ -111,8 +114,11 @@ const handlesubmit=(e)=>{
     e.preventDefault()
     // console.log("vanten")
     if(!newItems) return;
+    console.log(newItems)
     addItem(newItems);
+    console.log(items)
     setNewItems('')
+    // apiRequest()
     }
 
     return (
@@ -128,9 +134,9 @@ const handlesubmit=(e)=>{
         setSearch={setSearch}
    />
    <main>
-   {isLosding && <p> Loading Items...</p>}
+   {isLoading && <p> Loading Items...</p>}
    {fetchError && <p style={{color:"red"}}>{`Error: ${fetchError}`}</p>}
-    {!fetchError && !isLosding &&<Contant
+    {!fetchError && !isLoading &&<Contant
         items={items.filter(item => ((item.item).toLowerCase()).includes(search.toLowerCase()))}
         handleCheck={handleCheck}
         handleDelete={handleDelete}
